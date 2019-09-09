@@ -6,11 +6,17 @@ import org.junit.Test;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.ChronoPeriod;
+import java.time.chrono.ChronoZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
+import java.time.temporal.WeekFields;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -37,6 +43,27 @@ public class LocalDateTimeTester extends TestStarter {
 		outfr("1毫秒 = %.0e 纳秒;",
 				(double)LocalTime.ofSecondOfDay(1).toNanoOfDay()/1000);
 		/*1毫秒 = 1e+06 纳秒;即:1e6 纳秒*/
+
+		outfr("%s 是日期时间",LocalDateTime.class);
+		//=> class java.time.LocalDateTime 是日期时间对象
+
+		outfr("%s 是日期",LocalDate.class);
+		//=> class java.time.LocalDate 是日期对象
+
+		outfr("%s 是时间",LocalTime.class);
+		//=> class java.time.LocalTime 是时间对象
+
+		outfr("%s 是时间戳",Instant.class);
+		//=> class java.time.Instant 是时间戳对象
+
+		outfr("%s 是年",Year.class);
+		//=> class java.time.Year 是年
+
+		outfr("%s 是年-月",YearMonth.class);
+		//=> class java.time.YearMonth 是年-月
+
+		outfr("%s 是月-日",MonthDay.class);
+		//=> class java.time.MonthDay 是月-日
 
 	}
 
@@ -87,7 +114,6 @@ public class LocalDateTimeTester extends TestStarter {
 
 		outr("zonesMap:",zonesMap.toString().replaceAll(",",",\t"));
 		//=> zonesMap: {CTT=Asia/Shanghai,	 ART=Africa/Cairo,	 CNT=America/St_Johns ...
-
 	}
 
 	/**
@@ -138,6 +164,38 @@ public class LocalDateTimeTester extends TestStarter {
 
 		outr(ZonedDateTime.now(ZoneId.of("Asia/Shanghai")));
 		//=> 2019-09-08T20:40:44.681+08:00[Asia/Shanghai]
+	}
+
+	/**
+	 * 获取当前时间的其它值
+	 */
+	@Test
+	public void getNowOther(){
+
+		YearMonth nowYearMonth = YearMonth.now();
+
+		outfr("当前是: %s",nowYearMonth);
+		//=> 当前是 2019-09
+
+		outfr("今年是: %s",Year.now());
+		//=> 今年是: 2019
+
+		outfr("今天是: %s",MonthDay.now());
+		//=> 今天是: --09-09
+
+		//系统时钟:Clock.systemDefaultZone()
+
+		 Clock systemClock= Clock.systemDefaultZone();
+
+		outfr("当前时间戳:> %s |毫秒",systemClock.millis());
+		//=> 当前时间戳:> 1568035734234 |毫秒
+
+		outfr("当前时间戳:> %d 秒 %d 纳秒 |",systemClock.instant().getEpochSecond(),systemClock.instant().getNano());
+		//=> 当前时间戳:> 1568035734 秒 235000000 纳秒 |
+
+		outfr("当前时间戳:> %d 秒 %d 纳秒",Instant.now().getEpochSecond(),Instant.now().getNano());
+		//=> 当前时间戳:> 1568035734 秒 237000000 纳秒
+
 	}
 
 	/**
@@ -326,16 +384,18 @@ public class LocalDateTimeTester extends TestStarter {
 		截断的意思就是从指定字段值截断数据,
 		即:从此字段往后的所有字段值都设置为0*/
 
-		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.HOURS,localDateTime.truncatedTo(ChronoUnit.HOURS));
+		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.HOURS,
+				localDateTime.truncatedTo(ChronoUnit.HOURS));
 		//=> 将 2020-11-20T12:34:40.000000888 从 Hours 截断 => 2020-11-20T12:00
 
-		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.DAYS,localDateTime.truncatedTo(ChronoUnit.DAYS));
+		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.DAYS,
+				localDateTime.truncatedTo(ChronoUnit.DAYS));
 		//=> 将 2020-11-20T12:34:40.000000888 从 Days 截断 => 2020-11-20T00:00
 
 	}
 
 	/**
-	 * 常用日期和时间的获取
+	 * 常用日期和时间等值的获取方式
 	 */
 	@Test
 	public void getterForFavoriteDates(){
@@ -360,14 +420,27 @@ public class LocalDateTimeTester extends TestStarter {
 		outfr("本月第一天:%s",LocalDate.now().withDayOfMonth(1));
 		//=> 本月第一天:2019-09-01
 
+		outfr("本月第一天:%s",YearMonth.now().atDay(1));
+
 		outfr("本月最后一天:%s",LocalDate.now().withDayOfMonth(1).plusMonths(1).minusDays(1));
 		//=> 本月最后一天:2019-09-30
+
+		outfr("本月最后一天:%s",YearMonth.now().atEndOfMonth());
+
+		outfr("次月第一天:%s",LocalDate.now().plusMonths(1).withDayOfMonth(1));
+		//=> 次月第一天:2019-10-01
+
+		outfr("次月第一天:%s",YearMonth.now().plusMonths(1).atDay(1));
 
 		outfr("本月共 %d 天",LocalDate.now().lengthOfMonth());
 		//=> 本月共 30 天
 
-		outfr("次月第一天:%s",LocalDate.now().plusMonths(1).withDayOfMonth(1));
-		//=> 次月第一天:2019-10-01
+		outfr("本月共 %d 天",YearMonth.now().lengthOfMonth());
+
+		outfr("今年共 %d 天",YearMonth.now().lengthOfYear());
+		//=> 今年共 365 天
+
+		outfr("今年共 %d 天",Year.now().length());
 
 		LocalDateTime  nowTime = LocalDateTime.now();
 
@@ -392,7 +465,6 @@ public class LocalDateTimeTester extends TestStarter {
 	 */
 	@Test
 	public void timeCheck(){
-
 		LocalDateTime oneTime = LocalDateTime.of(2019,2,20,5,20,40);
 
 		outfr("今年%s是不是闺年? =>%s", oneTime.getYear(),oneTime.toLocalDate().isLeapYear()?'是':'否');
@@ -409,7 +481,8 @@ public class LocalDateTimeTester extends TestStarter {
 		outfr("%s 是否在 %s 之后? => %c",oneTime,otherTime,oneTime.isAfter(otherTime)?'是':'否');
 		//=> 2019-09-09T13:02:09.040 是否在 2019-10-01T08:28:28.888 之后? => 否
 
-		/*比较两个时间,比较顺序为:year->month->day->hour->minute->second->nano,某一项比较结果不为0,则直接返回比较结果,为0则往后比较.
+		/*比较两个时间,比较顺序为:year->month->day->hour->minute->second->nano,
+		* 某一项比较结果不为0,则直接返回比较结果,为0则往后比较.
 		* 如果比较参数非LocalDateTime实例,在上面的比较顺序后还会有一项日历系统的比对.*/
 
 		outfr("%s compareTo %s => %s",oneTime,otherTime,oneTime.compareTo(otherTime));
@@ -463,6 +536,192 @@ public class LocalDateTimeTester extends TestStarter {
 
 		outfr("%s 到 %s 差 %d 分钟",twoTime,oneTime,twoTime.until(oneTime,ChronoUnit.MINUTES));
 		//=> 2020-03-15T04:15:50 到 2019-02-20T05:20:40 差 -560095 分钟
+
+	}
+
+	/**
+	 * 字符串转日期与日期转字符串
+	 * 格式化的使用.
+	 */
+	@Test
+	public void str2DateAndDate2Str(){
+
+	/*
+	 *格式器中的字符对应的含义.
+	 *<pre>
+	 *  Symbol  Meaning                     Presentation      Examples
+	 *  ------  -------                     ------------      -------
+	 *   G       era                         text              AD; Anno Domini; A
+	 *   u       year                        year              2004; 04
+	 *   y       year-of-era                 year              2004; 04
+	 *   D       day-of-year                 number            189
+	 *   M/L     month-of-year               number/text       7; 07; Jul; July; J
+	 *   d       day-of-month                number            10
+	 *
+	 *   Q/q     quarter-of-year             number/text       3; 03; Q3; 3rd quarter
+	 *   Y       week-based-year             year              1996; 96
+	 *   w       week-of-week-based-year     number            27
+	 *   W       week-of-month               number            4
+	 *   E       day-of-week                 text              Tue; Tuesday; T
+	 *   e/c     localized day-of-week       number/text       2; 02; Tue; Tuesday; T
+	 *   F       week-of-month               number            3
+	 *
+	 *   a       am-pm-of-day                text              PM
+	 *   h       clock-hour-of-am-pm (1-12)  number            12
+	 *   K       hour-of-am-pm (0-11)        number            0
+	 *   k       clock-hour-of-am-pm (1-24)  number            0
+	 *
+	 *   H       hour-of-day (0-23)          number            0
+	 *   m       minute-of-hour              number            30
+	 *   s       second-of-minute            number            55
+	 *   S       fraction-of-second          fraction          978
+	 *   A       milli-of-day                number            1234
+	 *   n       nano-of-second              number            987654321
+	 *   N       nano-of-day                 number            1234000000
+	 *
+	 *   V       time-zone ID                zone-id           America/Los_Angeles; Z; -08:30
+	 *   z       time-zone name              zone-name         Pacific Standard Time; PST
+	 *   O       localized zone-offset       offset-O          GMT+8; GMT+08:00; UTC-08:00;
+	 *   X       zone-offset 'Z' for zero    offset-X          Z; -08; -0830; -08:30; -083015; -08:30:15;
+	 *   x       zone-offset                 offset-x          +0000; -08; -0830; -08:30; -083015; -08:30:15;
+	 *   Z       zone-offset                 offset-Z          +0000; -0800; -08:00;
+	 *
+	 *   p       pad next                    pad modifier      1
+	 *
+	 *   '       escape for text             delimiter
+	 *   ''      single quote                literal           '
+	 *   [       optional section start
+	 *   ]       optional section end
+	 *   #       reserved for future use
+	 *   {       reserved for future use
+	 *   }       reserved for future use
+	 * </pre>
+	 * */
+
+		/*使用预定义格式器解析字符串成日期
+		* java.time.format.DateTimeFormatter 提供了很多内置的格式器,可以拿来使用.*/
+
+		String strFormatter = "预置> %s ,转换%s =>[%s] %s ";
+
+		StringBuilder strDate = new StringBuilder("20190225");
+
+		DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+
+		LocalDate date = LocalDate.parse(strDate, formatter);
+
+		outfr(strFormatter,"BASIC_ISO_DATE",
+				strDate,date.getClass(),date.format(formatter));
+		//=> 预置> BASIC_ISO_DATE ,转换20190225 =>[class java.time.LocalDate] 20190225
+
+		formatter = DateTimeFormatter.ISO_DATE;
+
+		strDate.replace(0,strDate.length(),"2019-03-22");
+
+		date = LocalDate.parse(strDate,formatter);
+
+		outfr(strFormatter,"ISO_DATE",
+				strDate,date.getClass(),date.format(formatter));
+		//=> 预置> ISO_DATE ,转换2019-03-22 =>[class java.time.LocalDate] 2019-03-22
+
+		/*注意:格式器如果包含时间值,使用LocalDateTime的相关转换方法*/
+
+		formatter = DateTimeFormatter.ISO_DATE_TIME;
+
+		strDate.replace(0,strDate.length(),"2019-03-22T12:25:30");
+
+		 LocalDateTime dateTime = LocalDateTime.parse(strDate,formatter);
+
+		outfr(strFormatter,"ISO_DATE_TIME",
+				strDate,dateTime.getClass(),dateTime.format(formatter));
+		//=> 预置> ISO_DATE_TIME ,转换2019-03-22T12:25:30
+		// =>[class java.time.LocalDateTime] 2019-03-22T12:25:30
+
+		/*-----------------------------------------------------*/
+
+		/*自定义格式器来解析日期字符串*/
+
+		strFormatter=strFormatter.replace("预置","自定义");
+
+		formatter = DateTimeFormatter.ofPattern("yyyy=>MMdd");
+
+		strDate.replace(0,strDate.length(),"2020=>1020");
+
+		date = LocalDate.parse(strDate,formatter);
+
+		outfr(strFormatter,"yyyy=>MMdd",strDate,date.getClass(),date.format(formatter));
+		//=> 自定义> yyyy=>MMdd ,转换2020=>1020 =>[class java.time.LocalDate] 2020=>1020
+
+		/*获取格式器的第2个参数可以选择国际化语言,
+		像如果日期字符串中有英文的月份,就需要使用Locale.ENGLISH参数*/
+
+		formatter = DateTimeFormatter.ofPattern("MMM dd yy", Locale.ENGLISH);
+
+		strDate.replace(0,strDate.length(),"Jan 20 30");
+
+		date = LocalDate.parse(strDate,formatter);
+
+		outfr(strFormatter,"MMM dd yy",strDate,date.getClass(),date.format(formatter));
+		//=> 自定义> MMM dd yy ,转换Jan 20 30 =>[class java.time.LocalDate] Jan 20 30
+
+		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+		strDate.replace(0,strDate.length(),"2035-12-20 12:23:45");
+
+		dateTime = LocalDateTime.parse(strDate,formatter);
+
+		outfr(strFormatter,"yyyy-MM-dd HH:mm:ss",strDate,dateTime.getClass(),dateTime.format(formatter));
+		//=> 自定义> yyyy-MM-dd HH:mm:ss ,
+		// 转换2035-12-20 12:23:45 =>[class java.time.LocalDateTime] 2035-12-20 12:23:45
+
+		/*-----------------------------------------------------*/
+
+		/*使用格式器将日期格式化为字符串*/
+
+		strFormatter = "格式:%s,结果:%s";
+
+		formatter = DateTimeFormatter.ofPattern("yy-MM-dd|HH:mm:ss");
+
+		outfr(strFormatter,"yy-MM-dd|HH:mm:ss",dateTime.format(formatter));
+		//=> 格式:yy-MM-dd|HH:mm:ss,结果:35-12-20|12:23:45
+
+		formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
+
+		outfr(strFormatter,"dd MMM yyyy HH:mm",dateTime.format(formatter));
+		//=> 格式:dd MMM yyyy HH:mm,结果:20 十二月 2035 12:23
+
+		formatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm",Locale.ENGLISH);
+
+		outfr(strFormatter,"dd MMM yyyy HH:mm (Locale.ENGLISH)",dateTime.format(formatter));
+		//=> 格式:dd MMM yyyy HH:mm (Locale.ENGLISH),结果:20 Dec 2035 12:23
+
+
+	}
+
+	/**
+	 * Date与LocalDateTime转换.
+	 */
+	@Test
+	public void forDate2LocalDateAndReverse(){
+
+		/*将 java.util.Date 转换成 java.time.LocalDate(Time)*/
+
+		Date date  =new Date();
+
+		Instant instant = date.toInstant();
+
+		ZoneId zoneId  = ZoneId.systemDefault();
+
+		LocalDateTime localDateTime = instant.atZone(zoneId).toLocalDateTime();
+
+		LocalDate outLocalDate = localDateTime.toLocalDate();
+
+		/*将 java.time.LocalDate(Time) 转换成 java.util.Date*/
+
+		LocalDateTime inLocalDateTime = LocalDateTime.now();
+
+		ChronoZonedDateTime<LocalDate> zonedDateTime = inLocalDateTime.atZone(zoneId);
+
+		Date outDate = Date.from(zonedDateTime.toInstant());
 
 	}
 
