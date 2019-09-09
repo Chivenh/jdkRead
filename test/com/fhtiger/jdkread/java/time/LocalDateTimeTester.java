@@ -4,12 +4,13 @@ import com.fhtiger.jdkread.TestStarter;
 import org.junit.Test;
 
 import java.time.*;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -78,16 +79,14 @@ public class LocalDateTimeTester extends TestStarter {
 		Set<String> zones = ZoneId.getAvailableZoneIds();
 
 		outr("zones:",zones.toString().replaceAll(",",",\t"));
-		//=> zones: [Asia/Aden,	 America/Cuiaba,	 Etc/GMT+9,	 Etc/GMT+8,	 Africa/Nairobi,
-		// America/Marigot,	 Asia/Aqtau,	 Pacific/Kwajalein,	 America/El_Salvador,	 Asia/Pontianak,	 Africa/Cairo,	 Pacific/Pago_Pago,	 Africa/Mbabane,	 Asia/Kuching,	 Pacific/Honolulu,	 Pacific/Rarotonga,	 America/Guatemala,	 Australia/Hobart,	 Europe/London,	 America/Belize,	 America/Panama,	 Asia/Chungking,	 America/Managua,	 America/Indiana/Petersburg,	 Asia/Yerevan,	 Europe/Brussels,	 GMT,	 Europe/Warsaw,	 America/Chicago,	 Asia/Kashgar,	 Chile/Continental,	 Pacific/Yap,	 CET,	 Etc/GMT-1,	 Etc/GMT-0,	 Europe/Jersey,	 America/Tegucigalpa,	 Etc/GMT-5,	 Europe/Istanbul,	 America/Eirunepe,	 Etc/GMT-4,	 America/Miquelon,	 Etc/GMT-3,	 Europe/Luxembourg,	 Etc/GMT-2,	 Etc/GMT-9,	 America/Argentina/Catamarca,	 Etc/GMT-8,	 Etc/GMT-7,	 Etc/GMT-6,	 Europe/Zaporozhye,	 Canada/Yukon,	 Canada/Atlantic,	 Atlantic/St_Helena,	 Australia/Tasmania,	 Libya,	 Europe/Guernsey,	 America/Grand_Turk,	 US/Pacific-New,	 Asia/Samarkand,	 America/Argentina/Cordoba,	 Asia/Phnom_Penh,	 Africa/Kigali,	 Asia/Almaty,	 US/Alaska,	 Asia/Dubai,	 Europe/Isle_of_Man,	 America/Araguaina,	 Cuba,	 Asia/Novosibirsk,	 America/Argentina/Salta,	 Etc/GMT+3,	 Africa/Tunis,	 Etc/GMT+2,	 Etc/GMT+1,	 Pacific/Fakaofo,	 Africa/Tripoli,	 Etc/GMT+0,	 Israel,	 Africa/Banjul,	 Etc/GMT+7,	 Indian/Comoro,	 Etc/GMT+6,	 Etc/GMT+5,	 Etc/GMT+4,	 Pacific/Port_Moresby,	 US/Arizona,	 Antarctica/Syowa,	 Indian/Reunion,	 Pacific/Palau,	 Europe/Kaliningrad,	 America/Montevideo,	 Africa/Windhoek,	 Asia/Karachi,	 Africa/Mogadishu,	 Australia/Perth,	 Brazil/East,	 Etc/GMT,	 Asia/Chita,	 Pacific/Easter,	 Antarctica/Davis,	 Antarctica/McMurdo,	 Asia/Macao,	 America/Manaus,	 Africa/Freetown,	 Europe/Bucharest,	 America/Argentina/Mendoza,	 Asia/Macau,	 Europe/Malta,	 Mexico/BajaSur,	 Pacific/Tahiti,	 Africa/Asmera,	 Europe/Busingen,	 America/Argentina/Rio_Gallegos,	 Africa/Malabo,	 Europe/Skopje,	 America/Catamarca,	 America/Godthab,	 Europe/Sarajevo,	 Australia/ACT,	 GB-Eire,	 Africa/Lagos,	 America/Cordoba,	 Europe/Rome,	 Asia/Dacca,	 Indian/Mauritius,	 Pacific/Samoa,	 America/Regina,	 America/Fort_Wayne,	 America/Dawson_Creek,	 Africa/Algiers,	 Europe/Mariehamn,	 America/St_Johns,	 America/St_Thomas,	 Europe/Zurich,	 America/Anguilla,	 Asia/Dili,	 America/Denver,	 Africa/Bamako,	 GB,	 Mexico/General,	 Pacific/Wallis,	 Europe/Gibraltar,	 Africa/Conakry,	 Africa/Lubumbashi,	 Asia/Istanbul,	 America/Havana,	 NZ-CHAT,	 Asia/Choibalsan,	 America/Porto_Acre,	 Asia/Omsk,	 Europe/Vaduz,	 US/Michigan,	 Asia/Dhaka,	 America/Barbados,	 Europe/Tiraspol,	 Atlantic/Cape_Verde,	 Asia/Yekaterinburg,	 America/Louisville,	 Pacific/Johnston,	 Pacific/Chatham,	 Europe/Ljubljana,	 America/Sao_Paulo,	 Asia/Jayapura,	 America/Curacao,	 Asia/Dushanbe,	 America/Guyana,	 America/Guayaquil,	 America/Martinique,	 Portugal,	 Europe/Berlin,	 Europe/Moscow,	 Europe/Chisinau,	 America/Puerto_Rico,	 America/Rankin_Inlet,	 Pacific/Ponape,	 Europe/Stockholm,	 Europe/Budapest,	 America/Argentina/Jujuy,	 Australia/Eucla,	 Asia/Shanghai,	 Universal,	 Europe/Zagreb,	 America/Port_of_Spain,	 Europe/Helsinki,	 Asia/Beirut,	 Asia/Tel_Aviv,	 Pacific/Bougainville,	 US/Central,	 Africa/Sao_Tome,	 Indian/Chagos,	 America/Cayenne,	 Asia/Yakutsk,	 Pacific/Galapagos,	 Australia/North,	 Europe/Paris,	 Africa/Ndjamena,	 Pacific/Fiji,	 America/Rainy_River,	 Indian/Maldives,	 Australia/Yancowinna,	 SystemV/AST4,	 Asia/Oral,	 America/Yellowknife,	 Pacific/Enderbury,	 America/Juneau,	 Australia/Victoria,	 America/Indiana/Vevay,	 Asia/Tashkent,	 Asia/Jakarta,	 Africa/Ceuta,	 America/Recife,	 America/Buenos_Aires,	 America/Noronha,	 America/Swift_Current,	 Australia/Adelaide,	 America/Metlakatla,	 Africa/Djibouti,	 America/Paramaribo,	 Europe/Simferopol,	 Europe/Sofia,	 Africa/Nouakchott,	 Europe/Prague,	 America/Indiana/Vincennes,	 Antarctica/Mawson,	 America/Kralendijk,	 Antarctica/Troll,	 Europe/Samara,	 Indian/Christmas,	 America/Antigua,	 Pacific/Gambier,	 America/Indianapolis,	 America/Inuvik,	 America/Iqaluit,	 Pacific/Funafuti,	 UTC,	 Antarctica/Macquarie,	 Canada/Pacific,	 America/Moncton,	 Africa/Gaborone,	 Pacific/Chuuk,	 Asia/Pyongyang,	 America/St_Vincent,	 Asia/Gaza,	 Etc/Universal,	 PST8PDT,	 Atlantic/Faeroe,	 Asia/Qyzylorda,	 Canada/Newfoundland,	 America/Kentucky/Louisville,	 America/Yakutat,	 Asia/Ho_Chi_Minh,	 Antarctica/Casey,	 Europe/Copenhagen,	 Africa/Asmara,	 Atlantic/Azores,	 Europe/Vienna,	 ROK,	 Pacific/Pitcairn,	 America/Mazatlan,	 Australia/Queensland,	 Pacific/Nauru,	 Europe/Tirane,	 Asia/Kolkata,	 SystemV/MST7,	 Australia/Canberra,	 MET,	 Australia/Broken_Hill,	 Europe/Riga,	 America/Dominica,	 Africa/Abidjan,	 America/Mendoza,	 America/Santarem,	 Kwajalein,	 America/Asuncion,	 Asia/Ulan_Bator,	 NZ,	 America/Boise,	 Australia/Currie,	 EST5EDT,	 Pacific/Guam,	 Pacific/Wake,	 Atlantic/Bermuda,	 America/Costa_Rica,	 America/Dawson,	 Asia/Chongqing,	 Eire,	 Europe/Amsterdam,	 America/Indiana/Knox,	 America/North_Dakota/Beulah,	 Africa/Accra,	 Atlantic/Faroe,	 Mexico/BajaNorte,	 America/Maceio,	 Etc/UCT,	 Pacific/Apia,	 GMT0,	 America/Atka,	 Pacific/Niue,	 Canada/East-Saskatchewan,	 Australia/Lord_Howe,	 Europe/Dublin,	 Pacific/Truk,	 MST7MDT,	 America/Monterrey,	 America/Nassau,	 America/Jamaica,	 Asia/Bishkek,	 America/Atikokan,	 Atlantic/Stanley,	 Australia/NSW,	 US/Hawaii,	 SystemV/CST6,	 Indian/Mahe,	 Asia/Aqtobe,	 America/Sitka,	 Asia/Vladivostok,	 Africa/Libreville,	 Africa/Maputo,	 Zulu,	 America/Kentucky/Monticello,	 Africa/El_Aaiun,	 Africa/Ouagadougou,	 America/Coral_Harbour,	 Pacific/Marquesas,	 Brazil/West,	 America/Aruba,	 America/North_Dakota/Center,	 America/Cayman,	 Asia/Ulaanbaatar,	 Asia/Baghdad,	 Europe/San_Marino,	 America/Indiana/Tell_City,	 America/Tijuana,	 Pacific/Saipan,	 SystemV/YST9,	 Africa/Douala,	 America/Chihuahua,	 America/Ojinaga,	 Asia/Hovd,	 America/Anchorage,	 Chile/EasterIsland,	 America/Halifax,	 Antarctica/Rothera,	 America/Indiana/Indianapolis,	 US/Mountain,	 Asia/Damascus,	 America/Argentina/San_Luis,	 America/Santiago,	 Asia/Baku,	 America/Argentina/Ushuaia,	 Atlantic/Reykjavik,	 Africa/Brazzaville,	 Africa/Porto-Novo,	 America/La_Paz,	 Antarctica/DumontDUrville,	 Asia/Taipei,	 Antarctica/South_Pole,	 Asia/Manila,	 Asia/Bangkok,	 Africa/Dar_es_Salaam,	 Poland,	 Atlantic/Madeira,	 Antarctica/Palmer,	 America/Thunder_Bay,	 Africa/Addis_Ababa,	 Europe/Uzhgorod,	 Brazil/DeNoronha,	 Asia/Ashkhabad,	 Etc/Zulu,	 America/Indiana/Marengo,	 America/Creston,	 America/Mexico_City,	 Antarctica/Vostok,	 Asia/Jerusalem,	 Europe/Andorra,	 US/Samoa,	 PRC,	 Asia/Vientiane,	 Pacific/Kiritimati,	 America/Matamoros,	 America/Blanc-Sablon,	 Asia/Riyadh,	 Iceland,	 Pacific/Pohnpei,	 Asia/Ujung_Pandang,	 Atlantic/South_Georgia,	 Europe/Lisbon,	 Asia/Harbin,	 Europe/Oslo,	 Asia/Novokuznetsk,	 CST6CDT,	 Atlantic/Canary,	 America/Knox_IN,	 Asia/Kuwait,	 SystemV/HST10,	 Pacific/Efate,	 Africa/Lome,	 America/Bogota,	 America/Menominee,	 America/Adak,	 Pacific/Norfolk,	 America/Resolute,	 Pacific/Tarawa,	 Africa/Kampala,	 Asia/Krasnoyarsk,	 Greenwich,	 SystemV/EST5,	 America/Edmonton,	 Europe/Podgorica,	 Australia/South,	 Canada/Central,	 Africa/Bujumbura,	 America/Santo_Domingo,	 US/Eastern,	 Europe/Minsk,	 Pacific/Auckland,	 Africa/Casablanca,	 America/Glace_Bay,	 Canada/Eastern,	 Asia/Qatar,	 Europe/Kiev,	 Singapore,	 Asia/Magadan,	 SystemV/PST8,	 America/Port-au-Prince,	 Europe/Belfast,	 America/St_Barthelemy,	 Asia/Ashgabat,	 Africa/Luanda,	 America/Nipigon,	 Atlantic/Jan_Mayen,	 Brazil/Acre,	 Asia/Muscat,	 Asia/Bahrain,	 Europe/Vilnius,	 America/Fortaleza,	 Etc/GMT0,	 US/East-Indiana,	 America/Hermosillo,	 America/Cancun,	 Africa/Maseru,	 Pacific/Kosrae,	 Africa/Kinshasa,	 Asia/Kathmandu,	 Asia/Seoul,	 Australia/Sydney,	 America/Lima,	 Australia/LHI,	 America/St_Lucia,	 Europe/Madrid,	 America/Bahia_Banderas,	 America/Montserrat,	 Asia/Brunei,	 America/Santa_Isabel,	 Canada/Mountain,	 America/Cambridge_Bay,	 Asia/Colombo,	 Australia/West,	 Indian/Antananarivo,	 Australia/Brisbane,	 Indian/Mayotte,	 US/Indiana-Starke,	 Asia/Urumqi,	 US/Aleutian,	 Europe/Volgograd,	 America/Lower_Princes,	 America/Vancouver,	 Africa/Blantyre,	 America/Rio_Branco,	 America/Danmarkshavn,	 America/Detroit,	 America/Thule,	 Africa/Lusaka,	 Asia/Hong_Kong,	 Iran,	 America/Argentina/La_Rioja,	 Africa/Dakar,	 SystemV/CST6CDT,	 America/Tortola,	 America/Porto_Velho,	 Asia/Sakhalin,	 Etc/GMT+10,	 America/Scoresbysund,	 Asia/Kamchatka,	 Asia/Thimbu,	 Africa/Harare,	 Etc/GMT+12,	 Etc/GMT+11,	 Navajo,	 America/Nome,	 Europe/Tallinn,	 Turkey,	 Africa/Khartoum,	 Africa/Johannesburg,	 Africa/Bangui,	 Europe/Belgrade,	 Jamaica,	 Africa/Bissau,	 Asia/Tehran,	 WET,	 Africa/Juba,	 America/Campo_Grande,	 America/Belem,	 Etc/Greenwich,	 Asia/Saigon,	 America/Ensenada,	 Pacific/Midway,	 America/Jujuy,	 Africa/Timbuktu,	 America/Bahia,	 America/Goose_Bay,	 America/Virgin,	 America/Pangnirtung,	 Asia/Katmandu,	 America/Phoenix,	 Africa/Niamey,	 America/Whitehorse,	 Pacific/Noumea,	 Asia/Tbilisi,	 America/Montreal,	 Asia/Makassar,	 America/Argentina/San_Juan,	 Hongkong,	 UCT,	 Asia/Nicosia,	 America/Indiana/Winamac,	 SystemV/MST7MDT,	 America/Argentina/ComodRivadavia,	 America/Boa_Vista,	 America/Grenada,	 Australia/Darwin,	 Asia/Khandyga,	 Asia/Kuala_Lumpur,	 Asia/Thimphu,	 Asia/Rangoon,	 Europe/Bratislava,	 Asia/Calcutta,	 America/Argentina/Tucuman,	 Asia/Kabul,	 Indian/Cocos,	 Japan,	 Pacific/Tongatapu,	 America/New_York,	 Etc/GMT-12,	 Etc/GMT-11,	 Etc/GMT-10,	 SystemV/YST9YDT,	 Etc/GMT-14,	 Etc/GMT-13,	 W-SU,	 America/Merida,	 EET,	 America/Rosario,	 Canada/Saskatchewan,	 America/St_Kitts,	 Arctic/Longyearbyen,	 America/Caracas,	 America/Guadeloupe,	 Asia/Hebron,	 Indian/Kerguelen,	 SystemV/PST8PDT,	 Africa/Monrovia,	 Asia/Ust-Nera,	 Egypt,	 Asia/Srednekolymsk,	 America/North_Dakota/New_Salem,	 Asia/Anadyr,	 Australia/Melbourne,	 Asia/Irkutsk,	 America/Shiprock,	 America/Winnipeg,	 Europe/Vatican,	 Asia/Amman,	 Etc/UTC,	 SystemV/AST4ADT,	 Asia/Tokyo,	 America/Toronto,	 Asia/Singapore,	 Australia/Lindeman,	 America/Los_Angeles,	 SystemV/EST5EDT,	 Pacific/Majuro,	 America/Argentina/Buenos_Aires,	 Europe/Nicosia,	 Pacific/Guadalcanal,	 Europe/Athens,	 US/Pacific,	 Europe/Monaco]
+		//=> zones: [Asia/Aden,	 America/Cuiaba,	 Etc/GMT+9,	 Etc/GMT+8,	 Africa/Nairobi ...
 		outr("---------");
 
 		//8.2有可用简称的时区对照.
 		Map<String, String> zonesMap = ZoneId.SHORT_IDS;
 
 		outr("zonesMap:",zonesMap.toString().replaceAll(",",",\t"));
-		//=> zonesMap: {CTT=Asia/Shanghai,	 ART=Africa/Cairo,	 CNT=America/St_Johns,
-		// PRT=America/Puerto_Rico,	 PNT=America/Phoenix,	 PLT=Asia/Karachi,	 AST=America/Anchorage,	 BST=Asia/Dhaka,	 CST=America/Chicago,	 EST=-05:00,	 HST=-10:00,	 JST=Asia/Tokyo,	 IST=Asia/Kolkata,	 AGT=America/Argentina/Buenos_Aires,	 NST=Pacific/Auckland,	 MST=-07:00,	 AET=Australia/Sydney,	 BET=America/Sao_Paulo,	 PST=America/Los_Angeles,	 ACT=Australia/Darwin,	 SST=Pacific/Guadalcanal,	 VST=Asia/Ho_Chi_Minh,	 CAT=Africa/Harare,	 ECT=Europe/Paris,	 EAT=Africa/Addis_Ababa,	 IET=America/Indiana/Indianapolis,	 MIT=Pacific/Apia,	 NET=Asia/Yerevan}
+		//=> zonesMap: {CTT=Asia/Shanghai,	 ART=Africa/Cairo,	 CNT=America/St_Johns ...
 
 	}
 
@@ -169,11 +168,13 @@ public class LocalDateTimeTester extends TestStarter {
 		outr(localDateTime);//=>2030-02-20T11:50
 
 		//11.4根据与格林尼治时间的秒差值以及时区来初始化时间.
-		localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(60*60*48),ZoneId.of("Z"));
+		localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(60*60*48),
+				ZoneId.of("Z"));
 
 		outr(localDateTime);//=> 1970-01-03T00:00
 
-		localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(60*60*48),ZoneId.of("Asia/Shanghai"));
+		localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(60*60*48),
+				ZoneId.of("Asia/Shanghai"));
 
 		outr(localDateTime);//=> 1970-01-03T08:00
 
@@ -240,7 +241,8 @@ public class LocalDateTimeTester extends TestStarter {
 		//=> 月:SEPTEMBER,月:9
 
 		outfr("当月第 %d 天,本周 %s,本年第 %d 天",
-				localDateTime.getDayOfMonth(),localDateTime.getDayOfWeek(),localDateTime.getDayOfYear());
+				localDateTime.getDayOfMonth(),localDateTime.getDayOfWeek(),
+				localDateTime.getDayOfYear());
 		//=> 当月第 8 天,本周 SUNDAY,本年第 251 天
 
 		outfr("时:%2d ,分:%2d,秒:%2d,纳秒:%.2e",
@@ -268,6 +270,67 @@ public class LocalDateTimeTester extends TestStarter {
 
 		outfr("当前时间:%s",localTime);
 		//=> 当前时间:23:16:16.910
+
+	}
+
+	/**
+	 * 对时间对象的增减字段等操作
+	 */
+	@Test
+	public void plusMinusLocalDateTime(){
+
+		LocalDateTime localDateTime = LocalDateTime.of(2020,11,20,12,34,40,888);
+
+		outfr("初始时间:%s",localDateTime);
+		//=> 时间:2020-11-20T12:34:40.000000888
+
+		outfr("增加 %d 天后的时间: %s",2,localDateTime.plusDays(2));
+		//=> 增加 2 天后的时间: 2020-11-22T12:34:40.000000888
+
+		outfr("增加 %d 秒后的时间: %s",34,localDateTime.plusSeconds(34));
+		//=> 增加 34 秒后的时间: 2020-11-20T12:35:14.000000888
+
+		outfr("增加 %d %s 后的时间: %s",25,ChronoUnit.MINUTES,
+				localDateTime.plus(25,ChronoUnit.MINUTES));
+		//=> 增加 25 Minutes 后的时间: 2020-11-20T12:59:40.000000888
+
+		outfr("增加 %.0e 毫秒后的时间: %s",1e3,
+				localDateTime.plus(Duration.ofMillis((long)1e3)));
+		//=> 增加 1e+03 毫秒后的时间: 2020-11-20T12:34:41.000000888
+
+		outfr("减去 %d 小时后的时间: %s",4,localDateTime.minusHours(4));
+		//=> 减去 4 小时后的时间: 2020-11-20T08:34:40.000000888
+
+		outfr("减去 %d 周后的时间: %s",1,localDateTime.minusWeeks(1));
+		//=> 减去 1 周后的时间: 2020-11-13T12:34:40.000000888
+
+		outfr("减去 %d 月后的时间: %s",2,localDateTime.minus(Period.ofMonths(2)));
+		//=> 减去 2 月后的时间: 2020-09-20T12:34:40.000000888
+
+		outfr("设置日期为 %d 后的时间为: %s",15,localDateTime.withDayOfMonth(15));
+		//=> 设置日期为 15 后的时间为: 2020-11-15T12:34:40.000000888
+
+		outfr("设置纳秒为 %d 后的时间为: %s",0,localDateTime.withNano(0));
+		//=> 设置纳秒为 0 后的时间为: 2020-11-20T12:34:40
+
+		outfr("设置 %s 为 %d 后,再增加 %d %s,然后减去 %d %s 后\n时间为: %s",
+				ChronoField.YEAR,2030,2,ChronoUnit.MONTHS,3,ChronoUnit.HOURS,
+				localDateTime.with(temporal -> temporal
+				.with(ChronoField.YEAR,2030)
+				.plus(2,ChronoUnit.MONTHS)
+				.minus(3,ChronoUnit.HOURS)));
+		//=> 设置 Year 为 2030 后,再增加 2 Months,然后减去 3 Hours 后
+		//时间为: 2031-01-20T09:34:40.000000888
+
+		/*truncateTo 日期截断的用法,
+		截断的意思就是从指定字段值截断数据,
+		即:从此字段往后的所有字段值都设置为0*/
+
+		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.HOURS,localDateTime.truncatedTo(ChronoUnit.HOURS));
+		//=> 将 2020-11-20T12:34:40.000000888 从 Hours 截断 => 2020-11-20T12:00
+
+		outfr("将 %s 从 %s 截断 => %s",localDateTime,ChronoUnit.DAYS,localDateTime.truncatedTo(ChronoUnit.DAYS));
+		//=> 将 2020-11-20T12:34:40.000000888 从 Days 截断 => 2020-11-20T00:00
 
 	}
 
@@ -330,9 +393,9 @@ public class LocalDateTimeTester extends TestStarter {
 	@Test
 	public void timeCheck(){
 
-		LocalDateTime nowTime = LocalDateTime.now();
+		LocalDateTime oneTime = LocalDateTime.of(2019,2,20,5,20,40);
 
-		outfr("今年%s是不是闺年? =>%s",nowTime.getYear(),nowTime.toLocalDate().isLeapYear()?'是':'否');
+		outfr("今年%s是不是闺年? =>%s", oneTime.getYear(),oneTime.toLocalDate().isLeapYear()?'是':'否');
 		//=> 今年2019是不是闺年? =>否
 
 		LocalDateTime otherTime = LocalDateTime.of(2019,10,1,8,28,28,(int)888e6);
@@ -340,15 +403,67 @@ public class LocalDateTimeTester extends TestStarter {
 		outfr("另一个时间:%s",otherTime);
 		//=> 另一个时间:2019-10-01T08:28:28.888
 
-		outfr("%s 是否在 %s 之前? => %c",nowTime,otherTime,nowTime.isBefore(otherTime)?'是':'否');
+		outfr("%s 是否在 %s 之前? => %c",oneTime,otherTime, oneTime.isBefore(otherTime)?'是':'否');
 		//=> 2019-09-09T13:02:09.040 是否在 2019-10-01T08:28:28.888 之前? => 是
 
-		outfr("%s 是否在 %s 之后? => %c",nowTime,otherTime,nowTime.isAfter(otherTime)?'是':'否');
+		outfr("%s 是否在 %s 之后? => %c",oneTime,otherTime,oneTime.isAfter(otherTime)?'是':'否');
 		//=> 2019-09-09T13:02:09.040 是否在 2019-10-01T08:28:28.888 之后? => 否
 
+		/*比较两个时间,比较顺序为:year->month->day->hour->minute->second->nano,某一项比较结果不为0,则直接返回比较结果,为0则往后比较.
+		* 如果比较参数非LocalDateTime实例,在上面的比较顺序后还会有一项日历系统的比对.*/
+
+		outfr("%s compareTo %s => %s",oneTime,otherTime,oneTime.compareTo(otherTime));
+		//=> 2019-02-20T05:20:40 compareTo 2019-10-01T08:28:28.888 => -8
+
+		outfr("%s compareTo %s => %s",oneTime,otherTime.withMonth(oneTime.getMonthValue()),
+				oneTime.compareTo(otherTime.withMonth(oneTime.getMonthValue())));
+		//=> 2019-02-20T05:20:40 compareTo 2019-02-01T08:28:28.888 => 19
+
+		/*!比较两个LocalDateTime对象,参数非LocalDateTime对象直接返回false*/
+
+		outfr("%s equals %s = %s",
+				oneTime.truncatedTo(ChronoUnit.DAYS),
+				otherTime.withMonth(2).withDayOfMonth(20).truncatedTo(ChronoUnit.DAYS),
+				oneTime.truncatedTo(ChronoUnit.DAYS)
+						.equals(otherTime.withMonth(2).withDayOfMonth(20).truncatedTo(ChronoUnit.DAYS)));
+		//=> 2019-02-20T00:00 equals 2019-02-20T00:00 = true
+
+		outfr("%s equals %s = %s",
+				oneTime.truncatedTo(ChronoUnit.DAYS),oneTime.toLocalDate(),
+				oneTime.truncatedTo(ChronoUnit.DAYS).equals(oneTime.toLocalDate()));
+		//=> 2019-02-20T00:00 equals 2019-02-20 = false
+
+		/*!比较时间点,参数不限于LocalDateTime对象.*/
+
+		otherTime = LocalDateTime.from(oneTime);
+		outfr("%s isEqual %s = %s",oneTime,otherTime,oneTime.isEqual(otherTime));
+		//=> 2019-02-20T05:20:40 isEqual 2019-02-20T05:20:40 = true
+
+		oneTime = oneTime.truncatedTo(ChronoUnit.DAYS);
+		ChronoLocalDateTime otherChrono = ChronoLocalDateTime.from(oneTime);
+		outfr("%s isEqual %s = %s",oneTime,otherChrono,oneTime.isEqual(otherChrono));
+		//=> 2019-02-20T00:00 isEqual 2019-02-20T00:00 = true
 
 	}
 
+	@Test
+	public void diffTime(){
 
+		LocalDateTime oneTime = LocalDateTime.of(2019,2,20,5,20,40);
+		LocalDateTime twoTime = LocalDateTime.of(2020,3,15,4,15,50);
+
+		outfr("%s 与 %s 差 %d 天",oneTime,twoTime,ChronoUnit.DAYS.between(oneTime,twoTime));
+		//=> 2019-02-20T05:20:40 与 2020-03-15T04:15:50 差 388 天
+
+		outfr("%s 与 %s 差 %d 月",oneTime,twoTime,ChronoUnit.MONTHS.between(oneTime,twoTime));
+		//=> 2019-02-20T05:20:40 与 2020-03-15T04:15:50 差 12 月
+
+		outfr("%s 到 %s 差 %d 小时",oneTime,twoTime,oneTime.until(twoTime,ChronoUnit.HOURS));
+		//=> 2019-02-20T05:20:40 到 2020-03-15T04:15:50 差 9334 小时
+
+		outfr("%s 到 %s 差 %d 分钟",twoTime,oneTime,twoTime.until(oneTime,ChronoUnit.MINUTES));
+		//=> 2020-03-15T04:15:50 到 2019-02-20T05:20:40 差 -560095 分钟
+
+	}
 
 }
