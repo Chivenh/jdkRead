@@ -10,35 +10,35 @@ import com.sun.istack.internal.NotNull;
  */
 public abstract class TestStarter {
 
-	public static void out(@NotNull Object arg){
+	protected static void out(@NotNull Object arg){
 		System.out.print(" "+arg.toString());
 	}
 
-	public static void  out(Object ... args){
+	protected static void  out(Object ... args){
 		for (Object arg : args) {
 			out(arg);
 		}
 	}
 
-	public static void br(){
+	protected static void br(){
 		System.out.println();
 	}
 
-	public static void outr(@NotNull Object arg){
+	protected static void outr(@NotNull Object arg){
 		out(arg);
 		br();
 	}
 
-	public static void  outr(Object ... args){
+	protected static void  outr(Object ... args){
 		out(args);
 		br();
 	}
 
-	public static void outf(String format,Object... args){
+	protected static void outf(String format,Object... args){
 		System.out.printf(format,args);
 	}
 
-	public static void outfr(String format,Object... args){
+	protected static void outfr(String format,Object... args){
 		outf(format,args);
 		br();
 	}

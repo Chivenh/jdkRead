@@ -2,5 +2,5 @@
 #ignore the jdk source
 src/
 .idea/
-.iml
+*.iml
 out/
